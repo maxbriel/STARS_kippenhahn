@@ -160,6 +160,7 @@ def get_index(df):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('filename')
+    parser.add_argument('name')
     args = parser.parse_args()
     df = read_file(args.filename)
 
@@ -179,5 +180,5 @@ if __name__ == '__main__':
     plt.plot(N, star[2], lw=5, color='#b40424')
     plt.ylim(0,star[0][0]+2)
     plt.xlim(N[0], N[-1])
-    plt.savefig('test.png')
+    plt.savefig(f'{args.name}.png')
 

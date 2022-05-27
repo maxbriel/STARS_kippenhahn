@@ -29,7 +29,6 @@ class Zone:
         self.mid = (y_max + y_min)/2
 
 def calculate_zones(df):
-
     zones = []
     d = df.iloc[0,9:21]
     conv = d.to_numpy()
@@ -68,7 +67,12 @@ def calculate_zones(df):
                 bottoms.append(0)
                 tops.append(conv[0])
             else:
-                bottoms.append(conv[conv <= np.abs(first_semi)][-1])
+                x = np.where(l == first_semi)[0][0]-1
+                bottoms.append(l[x])
+    #            print(l[0])
+
+                
+    #            bottoms.append(conv[conv < np.abs(first_semi)][-1])
                 # No top bound above semi present.
                 if not (conv > np.abs(first_semi)).any():
                     tops.append(mass)
@@ -77,17 +81,20 @@ def calculate_zones(df):
                 
                 # check one below (what if multiple below?)
                 if conv[0] != bottoms[-1]:
+                    
                     temp =  conv[conv < bottoms[-1]]
+
                     if len(temp) == 1:
                         bottoms.append(0)
                         tops.append(temp[0])
                     else:
-                        bottoms.append(temp[-2])
-                        tops.append(temp[-1])
+                        bottoms.append(temp[0])
+                        tops.append(temp[1])
 
             # look for bounds above the top semi
             if tops[-1] != conv[-1] or tops[-1] != mass:
                 temp = conv[conv > tops[-1]]
+
                 if len(temp) == 1:
                     bottoms.append(temp[0])
                     tops.append(mass)
@@ -145,6 +152,8 @@ def calculate_zones(df):
                         z.append(N, b, t)
                         break
             
+            
+        
         N+=1
     return zones
 
@@ -159,8 +168,8 @@ def get_index(df):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename')
     parser.add_argument('name')
+    parser.add_argument('filename')
     args = parser.parse_args()
     df = read_file(args.filename)
 
